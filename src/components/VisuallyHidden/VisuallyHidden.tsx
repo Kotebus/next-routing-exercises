@@ -1,25 +1,27 @@
-import React from 'react';
+import {HTMLProps, PropsWithChildren, useEffect, useState} from 'react';
 
 import styles from './VisuallyHidden.module.css';
 
+interface IVisuallyHiddenProps extends HTMLProps<HTMLSpanElement>, PropsWithChildren {
+  className?: string;
+}
 const VisuallyHidden = ({
   children,
   className = '',
   ...delegated
-}) => {
-  const [forceShow, setForceShow] = React.useState(false);
+} : IVisuallyHiddenProps) => {
+  const [forceShow, setForceShow] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (process.env.NODE_ENV !== 'production') {
-      const handleKeyDown = (ev) => {
+      const handleKeyDown = (ev: KeyboardEvent) => {
         if (ev.key === 'Alt') {
           setForceShow(true);
         }
       };
 
-      const handleKeyUp = () => {
+      const handleKeyUp = () =>
         setForceShow(false);
-      };
 
       window.addEventListener('keydown', handleKeyDown);
       window.addEventListener('keyup', handleKeyUp);

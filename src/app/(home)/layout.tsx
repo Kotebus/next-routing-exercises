@@ -1,8 +1,7 @@
-import React from 'react';
-
+import {PropsWithChildren} from "react";
 import './styles.css';
 
-function HomeLayout({ children }) {
+function HomeLayout({ children } : PropsWithChildren) {
   return (
     <html lang="en">
       <body>{children}</body>

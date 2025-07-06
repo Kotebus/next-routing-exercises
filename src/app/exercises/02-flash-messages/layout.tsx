@@ -1,8 +1,7 @@
-import React from 'react';
-
+import {PropsWithChildren} from 'react';
 import './styles.css';
 
-function FlashMsgLayout({ children }) {
+function FlashMsgLayout({ children } : PropsWithChildren) {
   return (
     <html lang="en">
       <body>{children}</body>
