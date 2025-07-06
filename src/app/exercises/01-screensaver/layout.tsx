@@ -1,8 +1,8 @@
-import React from 'react';
+import {PropsWithChildren} from 'react';
 
 import './styles.css';
 
-function ScreenSaverLayout({ children }) {
+function ScreenSaverLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
       <body>{children}</body>

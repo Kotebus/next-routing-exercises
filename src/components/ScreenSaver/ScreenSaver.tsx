@@ -1,10 +1,10 @@
 'use client';
-import React from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 import styles from './ScreenSaver.module.css';
 
 function ScreenSaver({ color = 'white' }) {
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     x: 100,
     y: 122,
     inertia: {
@@ -13,9 +13,10 @@ function ScreenSaver({ color = 'white' }) {
     },
   });
 
-  const ref = React.useRef();
+  const ref = useRef<SVGSVGElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (ref.current === null) return;
     const bb =
       ref.current.getBoundingClientRect();
 
@@ -34,7 +35,7 @@ function ScreenSaver({ color = 'white' }) {
       if (
         nextPosition.x < 0 ||
         nextPosition.x >
-          window.innerWidth - bb.width
+          window.innerWidth - (bb.width)
       ) {
         nextInertia.horizontal *= -1;
       }
