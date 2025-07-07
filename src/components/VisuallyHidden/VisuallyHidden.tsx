@@ -1,8 +1,8 @@
-import {HTMLProps, PropsWithChildren, useEffect, useState} from 'react';
+import {ComponentProps, PropsWithChildren, useEffect, useState} from 'react';
 
 import styles from './VisuallyHidden.module.css';
 
-interface IVisuallyHiddenProps extends HTMLProps<HTMLSpanElement>, PropsWithChildren {
+interface IVisuallyHiddenProps extends ComponentProps<'span'> , PropsWithChildren {
   className?: string;
 }
 const VisuallyHidden = ({

@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import type {PropsWithChildren} from "react";
 import {
   AlertOctagon,
   AlertTriangle,
@@ -8,45 +8,42 @@ import {
   X,
 } from 'react-feather';
 
-import { ToastContext } from '../ToastProvider';
-import VisuallyHidden from '../VisuallyHidden';
-
 import styles from './Toast.module.css';
+import VisuallyHidden from "../VisuallyHidden";
+import {VariantOptionType} from "../ToastProvider/ToastContext";
 
 const ICONS_BY_VARIANT = {
-  notice: Info,
-  warning: AlertTriangle,
-  success: CheckCircle,
-  error: AlertOctagon,
+  'notice': Info,
+  'warning': AlertTriangle,
+  'success': CheckCircle,
+  'error': AlertOctagon,
 };
 
-function Toast({ id, variant, children }) {
-  const { dismissToast } =
-    React.useContext(ToastContext);
-  const Icon = ICONS_BY_VARIANT[variant] || Info;
+interface IToastProps extends PropsWithChildren {
+  variant: VariantOptionType;
+  handleDismiss: () => void;
+}
 
+function Toast({children, variant, handleDismiss}: IToastProps) {
+  const Icon = ICONS_BY_VARIANT[variant];
   return (
-    <div
-      className={`${styles.toast} ${styles[variant]}`}
-    >
-      <div className={styles.iconContainer}>
-        <Icon size={24} />
+      <div className={`${styles.toast} ${styles[variant]}`}>
+        <div className={styles.iconContainer}>
+          <Icon size={24}/>
+        </div>
+        <p className={styles.content}>
+          <VisuallyHidden> {variant} -</VisuallyHidden>
+          {children}
+        </p>
+        <button
+            className={styles.closeButton}
+            onClick={handleDismiss}
+            aria-label="Dismiss message"
+            aria-live="off"
+        >
+          <X size={24}/>
+        </button>
       </div>
-      <p className={styles.content}>
-        <VisuallyHidden>
-          {variant} -
-        </VisuallyHidden>
-        {children}
-      </p>
-      <button
-        className={styles.closeButton}
-        onClick={() => dismissToast(id)}
-        aria-label="Dismiss message"
-        aria-live="off"
-      >
-        <X size={24} />
-      </button>
-    </div>
   );
 }
 

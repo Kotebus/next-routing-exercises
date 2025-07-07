@@ -1,35 +1,36 @@
 'use client';
-import React from 'react';
 
-import { ToastContext } from '../ToastProvider';
 import Toast from '../Toast';
 import styles from './ToastShelf.module.css';
+import {useToast} from "../ToastProvider";
 
 function ToastShelf() {
-  const { toasts } =
-    React.useContext(ToastContext);
+  const context = useToast();
+  if (!context) return;
+
+  const {data: toasts, removeToast} = context;
 
   return (
-    <ol
-      className={styles.wrapper}
-      role="region"
-      aria-live="assertive"
-      aria-label="Notification"
-    >
-      {toasts.map((toast) => (
-        <li
-          key={toast.id}
-          className={styles.toastWrapper}
-        >
-          <Toast
-            id={toast.id}
-            variant={toast.variant}
-          >
-            {toast.message}
-          </Toast>
-        </li>
-      ))}
-    </ol>
+      <ol
+          className={styles.wrapper}
+          role="region"
+          aria-live="assertive"
+          aria-label="Notification"
+      >
+        {toasts.map((toast) => (
+            <li
+                key={toast.id}
+                className={styles.toastWrapper}
+            >
+              <Toast
+                  handleDismiss={() => removeToast(toast.id)}
+                  variant={toast.variant}
+              >
+                {toast.text}
+              </Toast>
+            </li>
+        ))}
+      </ol>
   );
 }
 

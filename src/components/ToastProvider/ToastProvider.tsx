@@ -1,50 +1,44 @@
 'use client';
-import React from 'react';
+import {PropsWithChildren, use, useCallback, useMemo, useState} from 'react';
 
 import useKeydown from '../../hooks/use-keydown';
+import {INewToastData, IToastData, ToastContext} from "./ToastContext";
 
-export const ToastContext = React.createContext();
+function ToastProvider({children} : PropsWithChildren) {
+  const [data, setData] = useState<IToastData[]>([]);
 
-function ToastProvider({ children }) {
-  const [toasts, setToasts] = React.useState([]);
+  const clearData = useCallback(() => setData([]), []);
+  useKeydown('Escape', clearData);
 
-  const handleEscape = React.useCallback(() => {
-    setToasts([]);
-  }, []);
+  const addToast = useCallback(
+      ({text, variant} : INewToastData) => {
+        const newToastDataItem: IToastData = {
+          text: text,
+          variant: variant,
+          id: crypto.randomUUID()
+        };
+        setData([...data, newToastDataItem]);
+      }, [data]);
 
-  useKeydown('Escape', handleEscape);
-
-  function createToast(message, variant) {
-    const nextToasts = [
-      ...toasts,
-      {
-        id: crypto.randomUUID(),
-        message,
-        variant,
+  const removeToast = useCallback(
+      (toastId: string) => {
+        const newData = data.filter((item) => item.id !== toastId);
+        setData(newData);
       },
-    ];
+      [data]);
 
-    setToasts(nextToasts);
-  }
-
-  function dismissToast(id) {
-    const nextToasts = toasts.filter((toast) => {
-      return toast.id !== id;
-    });
-    setToasts(nextToasts);
-  }
+  const value = useMemo(
+      () => {
+        return {data, addToast, removeToast};
+      },
+      [addToast, data, removeToast]);
 
   return (
-    <ToastContext.Provider
-      value={{
-        toasts,
-        createToast,
-        dismissToast,
-      }}
-    >
-      {children}
-    </ToastContext.Provider>
+      <ToastContext value={value}>
+        {children}
+      </ToastContext>
   );
 }
 
+export const useToast = () => use(ToastContext);
 export default ToastProvider;
